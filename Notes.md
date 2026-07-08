@@ -4,7 +4,7 @@ uv venv, uv pip install -r requirments.txt
 
 ### 
 
-### LangGraph =>  Creating orchestrating workflows
+### LangGraph =>  Creating orchestrating(the coordination of multiple autonomous AI agents—each specialized in a specific task—so they can collaborate to achieve complex goals) workflows
 
 Nodes, edges, graph, workflows
 
@@ -88,7 +88,7 @@ What you built in your LangChain course using create\_agent() is technically cal
 
 ### Workflows :-
 
-#### Sequential Workflows :-
+1. #### Sequential Workflows :-
 
 In LangGraph, a Sequential Workflow is the simplest, most straightforward way to connect tasks. It is a linear pipeline where data flows in a single direction from one step to the next like an assembly line in a factory.
 
@@ -128,21 +128,51 @@ Raw Data -> Editor Node -> Script Writer Node -> Hinglish Node -> O/P
 
 
 
+#### 2\. Parallel Workflows :-
+
+Multiple task running parallelly in langchain we cant do this that's why langgraph is used
 
 
 
+* In LangGraph, a Parallel Workflow works exactly like Scenario B:
+* In LangGraph, a Parallel Workflow (often called a Fan-Out / Fan-In pattern) is when a single node splits the flow into two or more independent branches that execute concurrently.
+* Later, those branches merge back into a single point (called a Join Node) before the graph completes.
+* In a parallel workflow, the State becomes even more magical. When the graph splits, multiple nodes are writing to the State simultaneously. LangGraph handles this safely by letting Node A write to its key (e.g., article\_text) and Node B write to its key (e.g., tweet\_text) without overriding or breaking each other's data.
+* You define separate, specialized functions for each task that can run independently. yup not that big difference they are at the end python functions.
+* In a parallel workflow, edges change from a simple "A to B" pathway into two specialized structural movements: Fan-Out and Fan-In.
+* Fan-Out (The splitter)
+* This occurs when a single node connects to multiple downstream nodes. Instead of creating a chain, you point one source to multiple targets. LangGraph detects this and automatically fires those target nodes concurrently.
+* you will see it in code.
 
 
 
+#### Fan-In (The Merger) :-
+
+This occurs when multiple parallel nodes point to a single destination node. This acts as a synchronization barrier. LangGraph will automatically pause the workflow at this junction and wait until every single parallel branch completes its task before letting the final node execute.
 
 
 
+#### Reducers :-
+
+when multiple nodes target a single value of state in a class that cause overriding and for that reason reducers are used
 
 
 
+#### 3\. Conditional Workflows :-
 
 
 
+* Conditional edges
+* Router functions
+* LLM-based decision making
+* RAG inside LangGraph (retrieval as a conditional path)
+* add\_messages reducer
+
+
+
+In a sequential workflow, the path is fixed - A → B → C, every single time.
+
+In a conditional workflow, the path changes - A → (check something) → go to B or go to C depending on the answer.
 
 
 
