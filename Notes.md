@@ -176,6 +176,37 @@ In a conditional workflow, the path changes - A → (check something) → go to 
 
 
 
+##### Two main things in conditional workflow
+
+###### Router Function
+
+a router function regular python function read current state and return name of next node
+
+This function doesn't do any real work. It only makes a decision  "based on what I see in the state, where should we go next?"
+
+
+
+###### Edges
+
+Instead of add\_edge (which always goes to the same node), you use add\_conditional\_edges (which calls the router function to decide).
+
+
+
+* Rule based decision
+* LLM based decision
+
+
+
+so we are going to create a smart college chatbot you can create it for your own college as well and show it as a major or minor project.
+
+
+
+FAISS vector store works in your internal storage like ram but chroma db works in you own folder and makes a new folder in the current directory both are vector stores
+
+
+
+add\_messages reducer
+
 
 
 
