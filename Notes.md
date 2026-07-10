@@ -205,11 +205,21 @@ FAISS vector store works in your internal storage like ram but chroma db works i
 
 
 
-add\_messages reducer
+add\_messages reducer6
 
 
 
+#### 4\. Iterative Workflows :-
 
+
+
+reactive loop
+
+feedback loop till some limits
+
+tools also used
+
+multi agent post generator
 
 
 
