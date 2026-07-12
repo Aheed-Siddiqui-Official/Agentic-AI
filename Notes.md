@@ -223,5 +223,59 @@ multi agent post generator
 
 
 
+#### 5\. Human in the loop :-
+
+
+
+Human in the loop (HITL) 
+
+
+
+Look, let’s be honest about real-world scenarios: You simply cannot trust an AI blindly.
+
+
+
+That is exactly why you need human approval for critical tasks. Imagine you are executing a full, end-to-end workflow, and something high-stakes comes up. You can't just let the AI run wild. You have to stop the workflow right in the middle, pause it, and wait for a human to give the green light.
+
+
+
+In the world of AI architecture, this exact mechanism is known as Human-in-the-Loop (HITL).
+
+
+
+for human in the loop you need 2 new things 
+
+
+
+1\. interrupt() the pause function
+
+
+
+Inside a node, when you call interrupt(some\_data), LangGraph:
+
+
+
+Stops execution immediately
+
+Sends some\_data up to your code (so you can show it to the user)
+
+Waits for input
+
+ 
+
+
+
+2\. Command(resume=...) — the resume function
+
+
+
+After the graph is paused, you resume it by calling app.invoke() again but with a Command:
+
+
+
+
+
+
+
 
 
