@@ -62,3 +62,165 @@ everytime you work on a new project on langsmith make a new project
 
 chain name from project inside os.environ\['LANGCHAIN\_PROJECT'] = 'Sequential LLM App'
 
+
+
+rag application => query context => langsmith integration good idea
+
+
+
+two types of errors in rag => 
+
+
+
+retriever error => an get good chunk of information
+
+
+
+generator error => model hallucinate, misuse context
+
+
+
+langsmith trace each step => user query, retrieved docs, llm prompt, llm response
+
+
+
+problem1 => langsmith trace langchain runnables, invoke function, or chain but we want entire app tracing
+
+
+
+problem2 => logical error everytime whole pdf is loading and taking same time but we need a db to get the saved data on run
+
+
+
+latency + full app tracing ragv2 file
+
+
+
+from langsmith import traceable  # <-- key import
+
+
+
+making each task function
+
+
+
+@traceable(name="load\_pdf")
+
+
+
+exact same name will be shown in langsmith ui
+
+
+
+now entire application will be traced
+
+
+
+when we run rag file 2 whole rag app is traced in to 2 parts first part is the doc loading chunking retrieving one and the other is the llm chain same as before
+
+
+
+
+
+now well make the code in a form top level trace and all the work in the same trace
+
+
+
+in file 4 well create an index in the directory and while searching first well check the index that is loading pdf, chunking, retrieving if the index exists well move on if doesn't well first create index
+
+
+
+glm => generalized linear model
+
+
+
+when build? => if run code first time, anything change in pdf, embedding model changed, chunking params changes
+
+
+
+langgraph used for llm apps
+
+
+
+makes llms as workflow
+
+
+
+edges, tasks as workflows
+
+
+
+debugging and structure of graph are very hectic
+
+
+
+we can store a graph as trace in langsmith
+
+each node becomes as run inside trace
+
+you can visualize the path taken
+
+
+
+if a workflow branches conditional/parallel/subgraph LangSmith captures which path was executed
+
+
+
+function level traceable added
+
+
+
+langsmith apart from observability
+
+
+
+monitoring and alerting track overall health of system, token, usage, error rates, cost, success, latency
+
+can set alert if latency > 5s : alert
+
+
+
+monitoring is studying overall trace
+
+
+
+another use is evaluation => llms have probabilistic nature => everytime give different answer => unpredictable behavior => upgrading tells how much the performance is good than the previous one
+
+
+
+llm ops field is part
+
+
+
+Prompt experimentation => extracting best performance from llm => allows you perform different prompts on a same dataset
+
+
+
+dataset creation and annotation
+
+
+
+helps to create data sets
+
+
+
+user feedback integration e.g. gpt thumbs up, down
+
+
+
+gives feature to add your app
+
+
+
+teams can effectively collaborate
+
+
+
+llmops => llm apps in production
+
+
+
+
+
+&#x20;
+

@@ -1,52 +1,67 @@
-from langchain_openai import ChatOpenAI
-from langchain_core.tools import tool
+import os
 import requests
-from langchain_community.tools import DuckDuckGoSearchRun
-from langchain.agents import create_react_agent, AgentExecutor
-from langchain import hub
 from dotenv import load_dotenv
+from langchain_groq import ChatGroq
+from langchain_core.tools import tool
+from langchain_core.prompts import PromptTemplate
+from langchain_classic.agents import create_react_agent, AgentExecutor
+from langsmith import Client
+from ddgs import DDGS  # Clean alternative to legacy DuckDuckGoSearchRun
 
 load_dotenv()
 
-search_tool = DuckDuckGoSearchRun()
+# --- 1. Custom Robust Web Search Tool ---
+@tool
+def native_web_search(query: str) -> str:
+    """
+    Search the web for current events, release dates, or general knowledge questions.
+    """
+    with DDGS() as ddgs:
+        results = [r["body"] for r in ddgs.text(query, max_results=3)]
+        return "\n\n".join(results)
 
+# --- 2. Custom Weather Retrieval Tool ---
 @tool
 def get_weather_data(city: str) -> str:
-  """
-  This function fetches the current weather data for a given city
-  """
-  url = f'https://api.weatherstack.com/current?access_key=f07d9636974c4120025fadf60678771b&query={city}'
+    """
+    This function fetches the current weather data for a given city
+    """
+    url = f'https://api.weatherstack.com/current?access_key=f07d9636974c4120025fadf60678771b&query={city}'
+    response = requests.get(url)
+    return str(response.json())
 
-  response = requests.get(url)
+# --- 3. Initialize Language Model Configuration ---
+# Ensure GROQ_API_KEY is present in your .env file
+llm = ChatGroq(model="llama-3.3-70b-versatile", temperature=0)
 
-  return response.json()
+# --- 4. Safely Fetch Public Prompt Template ---
+client = Client()
+prompt = client.pull_prompt("hwchase17/react", dangerously_pull_public_prompt=True)
 
-llm = ChatOpenAI()
+# List of initialized tools
+tools_list = [native_web_search, get_weather_data]
 
-# Step 2: Pull the ReAct prompt from LangChain Hub
-prompt = hub.pull("hwchase17/react")  # pulls the standard ReAct agent prompt
-
-# Step 3: Create the ReAct agent manually with the pulled prompt
+# --- 5. Construct Agent Runtime Pipeline ---
 agent = create_react_agent(
     llm=llm,
-    tools=[search_tool, get_weather_data],
+    tools=tools_list,
     prompt=prompt
 )
 
-# Step 4: Wrap it with AgentExecutor
 agent_executor = AgentExecutor(
     agent=agent,
-    tools=[search_tool, get_weather_data],
+    tools=tools_list,
     verbose=True,
-    max_iterations=5
+    max_iterations=5,
+    handle_parsing_errors=True  # Automatically manages structural anomalies
 )
 
-# What is the release date of Dhadak 2?
-# What is the current temp of gurgaon
-# Identify the birthplace city of Kalpana Chawla (search) and give its current temperature.
-
-# Step 5: Invoke
-response = agent_executor.invoke({"input": "What is the current temp of gurgaon"})
-print(response)
-
-print(response['output'])
+# --- 6. Execution Loop Execution Tracing ---
+if __name__ == "__main__":
+    user_query = "What is the birthdate and place of salman khan and current temperature of there?"
+    print(f"Executing Agent Pipeline for query: '{user_query}'...\n")
+    
+    response = agent_executor.invoke({"input": user_query})
+    
+    print("\n--- Final Extracted Answer ---")
+    print(response['output'])
